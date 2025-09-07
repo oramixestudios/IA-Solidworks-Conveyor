@@ -1,0 +1,17 @@
+# Windows / OneDrive
+Thumbs.db
+Desktop.ini
+~$*
+*.tmp
+
+# Mac
+.DS_Store
+
+# Logs
+*.log
+
+# CAD/CAE temporales comunes
+*.bak
+*.old
+*.temp
+*.swp
