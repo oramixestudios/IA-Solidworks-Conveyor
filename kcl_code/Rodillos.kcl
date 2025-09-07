@@ -1,0 +1,119 @@
+@settings(defaultLengthUnit = mm)
+
+// ---------- Parametros ----------
+frameLength = 5500
+frameWidth  = 500
+frameHeight = 800
+
+// PTR patas + placas
+ptrSide    = 50.8
+basePlateW = 200
+basePlateL = 150
+basePlateT = 10
+
+// Posicion de patas
+leftLegX  = 250
+rightLegX = frameLength - 350 - ptrSide
+
+// Canal C (largueros)
+chanHeight = 160     // alto total del canal
+webT       = 6       // espesor del alma (Y)
+flangeT    = 6       // espesor de ala (Z)
+flangeW    = 40      // ancho de ala hacia adentro (Y)
+chanTopZ   = frameHeight
+chanBotZ   = chanTopZ - chanHeight
+
+// Barrenos para ejes de rodillos (en el centro del web)
+holeDia    = 14
+holeZ      = chanBotZ + chanHeight/2
+frontHoleX = 150
+rearHoleX  = frameLength - 150
+
+// ---------- PATAS PTR con placa base ----------
+postL_F = startSketchOn(XY)
+  |> rectangle(width = ptrSide, height = ptrSide, corner = [0,0])
+  |> extrude(length = frameHeight)
+  |> translate(x = leftLegX, y = 0, z = 0)
+
+plateL_F = startSketchOn(XY)
+  |> rectangle(width = basePlateW, height = basePlateL, center = [ptrSide/2, ptrSide/2])
+  |> extrude(length = basePlateT)
+  |> translate(x = leftLegX, y = 0, z = 0)
+
+postL_R = startSketchOn(XY)
+  |> rectangle(width = ptrSide, height = ptrSide, corner = [0,0])
+  |> extrude(length = frameHeight)
+  |> translate(x = leftLegX, y = frameWidth - ptrSide, z = 0)
+
+plateL_R = startSketchOn(XY)
+  |> rectangle(width = basePlateW, height = basePlateL, center = [ptrSide/2, ptrSide/2])
+  |> extrude(length = basePlateT)
+  |> translate(x = leftLegX, y = frameWidth - ptrSide, z = 0)
+
+postR_F = startSketchOn(XY)
+  |> rectangle(width = ptrSide, height = ptrSide, corner = [0,0])
+  |> extrude(length = frameHeight)
+  |> translate(x = rightLegX, y = 0, z = 0)
+
+plateR_F = startSketchOn(XY)
+  |> rectangle(width = basePlateW, height = basePlateL, center = [ptrSide/2, ptrSide/2])
+  |> extrude(length = basePlateT)
+  |> translate(x = rightLegX, y = 0, z = 0)
+
+postR_R = startSketchOn(XY)
+  |> rectangle(width = ptrSide, height = ptrSide, corner = [0,0])
+  |> extrude(length = frameHeight)
+  |> translate(x = rightLegX, y = frameWidth - ptrSide, z = 0)
+
+plateR_R = startSketchOn(XY)
+  |> rectangle(width = basePlateW, height = basePlateL, center = [ptrSide/2, ptrSide/2])
+  |> extrude(length = basePlateT)
+  |> translate(x = rightLegX, y = frameWidth - ptrSide, z = 0)
+
+// ---------- LARGUEROS Canal C ----------
+// WEB izquierdo (placa X–Z extruida en Y)
+webLeft = startSketchOn(XZ)
+  |> rectangle(width = frameLength, height = chanHeight, corner = [0,0])
+  |> extrude(length = webT)
+  |> translate(x = 0, y = 0, z = chanBotZ)
+
+// WEB derecho
+webRight = startSketchOn(XZ)
+  |> rectangle(width = frameLength, height = chanHeight, corner = [0,0])
+  |> extrude(length = webT)
+  |> translate(x = 0, y = frameWidth - webT, z = chanBotZ)
+
+// ALAS izquierdas (prismas creados en XY y extruidos en Z)
+flangeTopLeft = startSketchOn(XY)
+  |> rectangle(width = frameLength, height = flangeW, corner = [0,0])
+  |> extrude(length = flangeT)
+  |> translate(x = 0, y = webT, z = chanTopZ - flangeT)
+
+flangeBotLeft = startSketchOn(XY)
+  |> rectangle(width = frameLength, height = flangeW, corner = [0,0])
+  |> extrude(length = flangeT)
+  |> translate(x = 0, y = webT, z = chanBotZ)
+
+// ALAS derechas
+flangeTopRight = startSketchOn(XY)
+  |> rectangle(width = frameLength, height = flangeW, corner = [0,0])
+  |> extrude(length = flangeT)
+  |> translate(x = 0, y = frameWidth - webT - flangeW, z = chanTopZ - flangeT)
+
+flangeBotRight = startSketchOn(XY)
+  |> rectangle(width = frameLength, height = flangeW, corner = [0,0])
+  |> extrude(length = flangeT)
+  |> translate(x = 0, y = frameWidth - webT - flangeW, z = chanBotZ)
+
+// ---------- BARRENOS en el centro del WEB ----------
+// Izquierdo: croquis sobre cara START y corte en -Y
+holesLeft = startSketchOn(webLeft, face = START)
+  |> circle(center = [frontHoleX, holeZ], radius = holeDia/2)
+  |> circle(center = [rearHoleX,  holeZ], radius = holeDia/2)
+  |> extrude(%, length = -webT)
+
+// Derecho: croquis sobre cara END y corte en -Y
+holesRight = startSketchOn(webRight, face = END)
+  |> circle(center = [frontHoleX, holeZ], radius = holeDia/2)
+  |> circle(center = [rearHoleX,  holeZ], radius = holeDia/2)
+  |> extrude(%, length = -webT)

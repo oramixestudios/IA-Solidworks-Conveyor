@@ -1,0 +1,219 @@
+@settings(defaultLengthUnit = mm)
+
+/* *************** PARÁMETROS *************** */
+frameLength = 3500
+frameWidth = 1000
+frameHeight = 800
+
+// PTR + placas
+ptrSide = 50.8
+basePlateW = 200
+basePlateL = 150
+basePlateT = 10
+leftLegX = 250
+rightLegX = frameLength - 350 - ptrSide
+
+// Canal C (largueros)
+chanHeight = 160
+webT = 6
+flangeW = 40
+flangeT = 6
+chanTopZ = frameHeight
+chanBotZ = chanTopZ - chanHeight
+
+// Rodillos y barrenos
+rollerDia = 101.6 // ≈4"
+clearanceY = 2 // holgura vs webs
+holeRad = 7 // Ø14 mm barreno
+endMargin = 120 // margen en X para rodillos
+
+
+/* *************** PATAS + PLACAS *************** */
+// LF
+skLF1 = startSketchOn(XY)
+  |> rectangle(width = ptrSide, height = ptrSide, corner = [0, 0])
+legLFBody = extrude(skLF1, length = frameHeight)
+  |> translate(x = leftLegX, y = 0, z = 0)
+skLF2 = startSketchOn(XY)
+  |> rectangle(width = basePlateW, height = basePlateL, center = [ptrSide / 2, ptrSide / 2])
+legLFPlat = extrude(skLF2, length = basePlateT)
+  |> translate(x = leftLegX, y = 0, z = 0)
+legLF = union([legLFBody, legLFPlat])
+
+// LR
+skLR1 = startSketchOn(XY)
+  |> rectangle(width = ptrSide, height = ptrSide, corner = [0, 0])
+legLRBody = extrude(skLR1, length = frameHeight)
+  |> translate(x = leftLegX, y = frameWidth - ptrSide, z = 0)
+skLR2 = startSketchOn(XY)
+  |> rectangle(width = basePlateW, height = basePlateL, center = [ptrSide / 2, ptrSide / 2])
+legLRPlat = extrude(skLR2, length = basePlateT)
+  |> translate(x = leftLegX, y = frameWidth - ptrSide, z = 0)
+legLR = union([legLRBody, legLRPlat])
+
+// RF
+skRF1 = startSketchOn(XY)
+  |> rectangle(width = ptrSide, height = ptrSide, corner = [0, 0])
+legRFBody = extrude(skRF1, length = frameHeight)
+  |> translate(x = rightLegX, y = 0, z = 0)
+skRF2 = startSketchOn(XY)
+  |> rectangle(width = basePlateW, height = basePlateL, center = [ptrSide / 2, ptrSide / 2])
+legRFPlat = extrude(skRF2, length = basePlateT)
+  |> translate(x = rightLegX, y = 0, z = 0)
+legRF = union([legRFBody, legRFPlat])
+
+// RR
+skRR1 = startSketchOn(XY)
+  |> rectangle(width = ptrSide, height = ptrSide, corner = [0, 0])
+legRRBody = extrude(skRR1, length = frameHeight)
+  |> translate(x = rightLegX, y = frameWidth - ptrSide, z = 0)
+skRR2 = startSketchOn(XY)
+  |> rectangle(width = basePlateW, height = basePlateL, center = [ptrSide / 2, ptrSide / 2])
+legRRPlat = extrude(skRR2, length = basePlateT)
+  |> translate(x = rightLegX, y = frameWidth - ptrSide, z = 0)
+legRR = union([legRRBody, legRRPlat])
+
+/* *************** CANALES C (abiertos hacia afuera) *************** */
+// Web izquierdo (Y=0..webT)
+skWL = startSketchOn(XZ)
+  |> rectangle(width = frameLength, height = chanHeight, corner = [0, 0])
+webLeft = extrude(skWL, length = webT)
+  |> translate(x = 0, y = 0, z = chanBotZ)
+// Alas hacia fuera (-Y)
+skFTL = startSketchOn(XY)
+  |> rectangle(width = frameLength, height = flangeW, corner = [0, 0])
+flangeTopLft = extrude(skFTL, length = flangeT)
+  |> translate(x = 0, y = -flangeW, z = chanTopZ - flangeT)
+skFBL = startSketchOn(XY)
+  |> rectangle(width = frameLength, height = flangeW, corner = [0, 0])
+flangeBotLft = extrude(skFBL, length = flangeT)
+  |> translate(x = 0, y = -flangeW, z = chanBotZ)
+
+// Web derecho (Y=frameWidth-webT..frameWidth)
+skWR = startSketchOn(XZ)
+  |> rectangle(width = frameLength, height = chanHeight, corner = [0, 0])
+webRight = extrude(skWR, length = webT)
+  |> translate(x = 0, y = frameWidth - webT, z = chanBotZ)
+// Alas hacia fuera (+Y)
+skFTR = startSketchOn(XY)
+  |> rectangle(width = frameLength, height = flangeW, corner = [0, 0])
+flangeTopRgt = extrude(skFTR, length = flangeT)
+  |> translate(x = 0, y = frameWidth, z = chanTopZ - flangeT)
+skFBR = startSketchOn(XY)
+  |> rectangle(width = frameLength, height = flangeW, corner = [0, 0])
+flangeBotRgt = extrude(skFBR, length = flangeT)
+  |> translate(x = 0, y = frameWidth, z = chanBotZ)
+
+  /* *************** RODILLOS (10 centrados entre webs) *************** */
+// Caras internas de los webs
+innerLeftY = webT
+innerRightY = frameWidth - webT
+
+// Largo y centrado exacto
+rollerLen = innerRightY - innerLeftY - (2 * clearanceY)
+
+// Ubicación de rodillos en la horizontal
+yCenter = (innerLeftY + innerRightY) / .69
+
+yStart = yCenter - (rollerLen / 2)
+axisZ = chanBotZ + chanHeight / 2
+
+// Sólido base (se extruye en Y)
+skRoll = startSketchOn(XZ)
+  |> circle(center = [0, 0], radius = rollerDia / 2)
+rollerBase = extrude(skRoll, length = rollerLen)
+
+// Estaciones X (10 rodillos)
+xPitch = (frameLength - (2 * endMargin)) / 9
+x0 = endMargin
+x1 = endMargin + 1 * xPitch
+x2 = endMargin + 2 * xPitch
+x3 = endMargin + 3 * xPitch
+x4 = endMargin + 4 * xPitch
+x5 = endMargin + 5 * xPitch
+x6 = endMargin + 6 * xPitch
+x7 = endMargin + 7 * xPitch
+x8 = endMargin + 8 * xPitch
+x9 = endMargin + 9 * xPitch
+
+r01 = clone(rollerBase)
+  |> translate(x = x0, y = yStart, z = axisZ)
+r02 = clone(rollerBase)
+  |> translate(x = x1, y = yStart, z = axisZ)
+r03 = clone(rollerBase)
+  |> translate(x = x2, y = yStart, z = axisZ)
+r04 = clone(rollerBase)
+  |> translate(x = x3, y = yStart, z = axisZ)
+r05 = clone(rollerBase)
+  |> translate(x = x4, y = yStart, z = axisZ)
+r06 = clone(rollerBase)
+  |> translate(x = x5, y = yStart, z = axisZ)
+r07 = clone(rollerBase)
+  |> translate(x = x6, y = yStart, z = axisZ)
+r08 = clone(rollerBase)
+  |> translate(x = x7, y = yStart, z = axisZ)
+r09 = clone(rollerBase)
+  |> translate(x = x8, y = yStart, z = axisZ)
+r10 = clone(rollerBase)
+  |> translate(x = x9, y = yStart, z = axisZ)
+
+  /* *************** BARRENOS EN WEBS (alineados a ejes de rodillos) *************** */
+// Izquierdo (cara START, corte -webT)
+skHL = startSketchOn(webLeft, face = START)
+  |> circle(center = [-x1, axisZ], radius = holeRad)
+  |> circle(center = [-x2, axisZ], radius = holeRad)
+  |> circle(center = [-x2, axisZ], radius = holeRad)
+  |> circle(center = [-x3, axisZ], radius = holeRad)
+  |> circle(center = [-x4, axisZ], radius = holeRad)
+  |> circle(center = [-x5, axisZ], radius = holeRad)
+  |> circle(center = [-x6, axisZ], radius = holeRad)
+  |> circle(center = [-x7, axisZ], radius = holeRad)
+  |> circle(center = [-x8, axisZ], radius = holeRad)
+  |> circle(center = [-x9, axisZ], radius = holeRad)
+cutHL = extrude(skHL, length = -webT)
+
+// Derecho (cara START, corte +webT)
+skHR = startSketchOn(webRight, face = START)
+  |> circle(center = [-x0, axisZ], radius = holeRad)
+  |> circle(center = [-x1, axisZ], radius = holeRad)
+  |> circle(center = [-x2, axisZ], radius = holeRad)
+  |> circle(center = [-x3, axisZ], radius = holeRad)
+  |> circle(center = [-x4, axisZ], radius = holeRad)
+  |> circle(center = [-x5, axisZ], radius = holeRad)
+  |> circle(center = [-x6, axisZ], radius = holeRad)
+  |> circle(center = [-x7, axisZ], radius = holeRad)
+  |> circle(center = [-x8, axisZ], radius = holeRad)
+  |> circle(center = [-x9, axisZ], radius = holeRad)
+cutHR = extrude(skHR, length = webT)
+
+/* *************** ENSAMBLE (multibody, sin boolean) *************** */
+assembly = concat(
+  [],
+  items = [
+    // Estructura
+    legLF,
+    legLR,
+    legRF,
+    legRR,
+    webLeft,
+    webRight,
+    flangeTopLft,
+    flangeBotLft,
+    flangeTopRgt,
+    flangeBotRgt,
+    // Rodillos
+    r01,
+    r02,
+    r03,
+    r04,
+    r05,
+    r06,
+    r07,
+    r08,
+    r09,
+    r10
+  ],
+)
+assembly
+sketch001 = startSketchOn(XZ)
+profile001 = startProfile(sketch001, at = [1253.74, -312.98])

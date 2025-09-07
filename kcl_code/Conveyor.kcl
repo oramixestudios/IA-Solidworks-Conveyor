@@ -1,0 +1,74 @@
+@settings(defaultLengthUnit = mm)
+
+frameLength = 3500
+frameWidth  = 500
+frameHeight = 800
+
+webT       = 6
+chanHeight = 160
+chanTopZ   = frameHeight
+chanBotZ   = chanTopZ - chanHeight
+
+rollerDia  = 101.6
+clearanceY = 2
+
+interiorW  = frameWidth - 2*webT
+rollerLen  = interiorW - 2*clearanceY
+
+yCenter = webT + interiorW/2
+startY  = yCenter - rollerLen/2
+zCenter = chanBotZ + chanHeight/2
+
+xStart = 150
+xEnd   = frameLength - 150
+pitch  = (xEnd - xStart) / 9
+
+roller01 = startSketchOn(XZ)
+  |> circle(center = [0,0], radius = rollerDia/2)
+  |> extrude(length = rollerLen)
+  |> translate(x = xStart + 0*pitch, y = startY, z = zCenter)
+
+roller02 = startSketchOn(XZ)
+  |> circle(center = [0,0], radius = rollerDia/2)
+  |> extrude(length = rollerLen)
+  |> translate(x = xStart + 1*pitch, y = startY, z = zCenter)
+
+roller03 = startSketchOn(XZ)
+  |> circle(center = [0,0], radius = rollerDia/2)
+  |> extrude(length = rollerLen)
+  |> translate(x = xStart + 2*pitch, y = startY, z = zCenter)
+
+roller04 = startSketchOn(XZ)
+  |> circle(center = [0,0], radius = rollerDia/2)
+  |> extrude(length = rollerLen)
+  |> translate(x = xStart + 3*pitch, y = startY, z = zCenter)
+
+roller05 = startSketchOn(XZ)
+  |> circle(center = [0,0], radius = rollerDia/2)
+  |> extrude(length = rollerLen)
+  |> translate(x = xStart + 4*pitch, y = startY, z = zCenter)
+
+roller06 = startSketchOn(XZ)
+  |> circle(center = [0,0], radius = rollerDia/2)
+  |> extrude(length = rollerLen)
+  |> translate(x = xStart + 5*pitch, y = startY, z = zCenter)
+
+roller07 = startSketchOn(XZ)
+  |> circle(center = [0,0], radius = rollerDia/2)
+  |> extrude(length = rollerLen)
+  |> translate(x = xStart + 6*pitch, y = startY, z = zCenter)
+
+roller08 = startSketchOn(XZ)
+  |> circle(center = [0,0], radius = rollerDia/2)
+  |> extrude(length = rollerLen)
+  |> translate(x = xStart + 7*pitch, y = startY, z = zCenter)
+
+roller09 = startSketchOn(XZ)
+  |> circle(center = [0,0], radius = rollerDia/2)
+  |> extrude(length = rollerLen)
+  |> translate(x = xStart + 8*pitch, y = startY, z = zCenter)
+
+roller10 = startSketchOn(XZ)
+  |> circle(center = [0,0], radius = rollerDia/2)
+  |> extrude(length = rollerLen)
+  |> translate(x = xStart + 9*pitch, y = startY, z = zCenter)
