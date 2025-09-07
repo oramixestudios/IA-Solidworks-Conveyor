@@ -8,19 +8,19 @@ Este proyecto es un **primer acercamiento para integrar IA en diseño CAD**. Pro
 ## Proceso
 1. **Estructura inicial (incompleta)**  
    _Generada por IA en Zoo (KCL)._  
-   ![Estructura](Imagenes/conveyor_estructura.png)
+   ![Estructura](Imagenes/conveyor_estructura.PNG)
 
 2. **Subensamble de rodillos**  
    _Fila de rodillos paramétrica._  
-   ![Rodillos](Imagenes/rodillos.png)
+   ![Rodillos](Imagenes/rodillos.PNG)
 
 3. **Integración completa**  
    _Correcciones de posición + parámetros; conveyor con rodillos._  
-   ![Conveyor completo](Imagenes/conveyor_completo.png)
+   ![Conveyor completo](Imagenes/conveyor_completo.PNG)
 
 4. **Presentación**  
    _Correcciones de posición + parámetros; conveyor con rodillos._  
-   ![Presentacion](Imagenes/presentacion.PNG)   
+   ![Presentación](Imagenes/presentacion.PNG)
 
 ## Archivos
 - `kcl_code/Conveyor.kcl` – estructura base  
